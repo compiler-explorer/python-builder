@@ -11,10 +11,16 @@ RUN apt update -y -q && apt upgrade -y -q && apt update -y -q && \
     # Use python3.6 build-deps for Ubuntu 18.04.
     apt -q build-dep -y python3.6 && \
     apt -q install -y \
-    wget \
+    curl \
     git \
-    s3cmd \
+    unzip \
     xz-utils \
+    && \
+    cd /tmp && \
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf aws* \
     && \
     # Remove apt's lists to make the image smaller.
     rm -rf /var/lib/apt/lists/*

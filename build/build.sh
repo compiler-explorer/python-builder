@@ -13,8 +13,7 @@ fi
 
 PREFIX_DIR=/opt/compiler-explorer/python-${VERSION}
 
-wget -q https://www.python.org/ftp/python/${VERSION}/Python-${VERSION}.tgz
-tar xf Python-${VERSION}.tgz
+curl -sL https://www.python.org/ftp/python/${VERSION}/Python-${VERSION}.tgz | tar zxf -
 pushd Python-${VERSION}
 ./configure \
     --prefix=${PREFIX_DIR} \
@@ -36,5 +35,5 @@ export XZ_DEFAULTS="-T 0"
 tar Jcf ${OUTPUT} -C /opt/compiler-explorer .
 
 if [[ ! -z "${S3OUTPUT}" ]]; then
-    s3cmd put --rr ${OUTPUT} ${S3OUTPUT}
+    aws s3 cp --storage-class REDUCED_REDUNDANCY "${OUTPUT}" "${S3OUTPUT}"
 fi
