@@ -2,14 +2,24 @@
 
 set -ex
 
+ROOT=$(pwd)
 VERSION=$1
-OUTPUT=/root/python-${VERSION}.tar.xz
-S3OUTPUT=""
-if echo $2 | grep s3://; then
+FULLNAME=python-${VERSION}.tar.xz
+OUTPUT=${ROOT}/${FULLNAME}
+S3OUTPUT=
+if [[ $2 =~ ^s3:// ]]; then
     S3OUTPUT=$2
 else
-    OUTPUT=${2-/root/python-${VERSION}.tar.xz}
+    if [[ -d "${2}" ]]; then
+        OUTPUT=$2/${FULLNAME}
+    else
+        OUTPUT=${2-$OUTPUT}
+    fi
 fi
+
+REVISION="python-${VERSION}"
+echo "ce-build-revision:${REVISION}"
+echo "ce-build-output:${OUTPUT}"
 
 PREFIX_DIR=/opt/compiler-explorer/python-${VERSION}
 
@@ -37,3 +47,5 @@ tar Jcf ${OUTPUT} -C /opt/compiler-explorer .
 if [[ ! -z "${S3OUTPUT}" ]]; then
     aws s3 cp --storage-class REDUCED_REDUNDANCY "${OUTPUT}" "${S3OUTPUT}"
 fi
+
+echo "ce-build-status:OK"
