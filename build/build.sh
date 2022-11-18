@@ -27,7 +27,6 @@ curl -sL https://www.python.org/ftp/python/${VERSION}/Python-${VERSION}.tgz | ta
 pushd Python-${VERSION}
 ./configure \
     --prefix=${PREFIX_DIR} \
-    --without-ensurepip \
     --without-pymalloc
 
 make -j$(nproc)
